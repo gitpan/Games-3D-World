@@ -1,0 +1,43 @@
+This file contains message digests of all files listed in MANIFEST,
+signed via the Module::Signature module, version 0.21.
+
+To verify the content in this distribution, first make sure you have
+Module::Signature installed, then type:
+
+    % cpansign -v
+
+It would check each file's integrity, as well as the signature's
+validity.  If "==> Signature verified OK! <==" is not displayed,
+the distribution may already have been compromised, and you should
+not run its Makefile.PL or Build.PL.
+
+-----BEGIN PGP SIGNED MESSAGE-----
+
+SHA1 a85dd471c5d65f1b30967f80daf57112775f9093 BUGS
+SHA1 fa07912547bd1384f953b55475bbd02e85fd9222 CHANGES
+SHA1 09acf5a0408dd9e92d430acdda09b8fc85a58cc9 CREDITS
+SHA1 d6a6c30ee6d9ba6b9afab8bbf6a25e1b23c744e0 LICENSE
+SHA1 d11e30be57835fe451475e5e0bfcf0630af3600c MANIFEST
+SHA1 a809ded20df505ad4e6d193717a746b6e260477a Makefile.PL
+SHA1 e65207dbc52a23a32d506235cbd7603db9bdee26 README
+SHA1 aa60fad2eb8a5456c4cfcb881d12e84ca99dbf23 TODO
+SHA1 2620372658d854bf788c80c387e87c955f985e9a lib/Games/3D/Brush.pm
+SHA1 76980c7718cf8c600c026c3416e2a7e40d3f68a6 lib/Games/3D/Level.pm
+SHA1 db7e08602215905c604b003f0dde8577d5b76520 lib/Games/3D/Vector.pm
+SHA1 0ea811e942e89116f16a3b44ed014e523ad4d85f lib/Games/3D/World.pm
+SHA1 77acdb6ce9638447db164f3d8ff03370f4070b02 t/brush.t
+SHA1 784b27d965e1dee6fecd3af13adc4fac51d50c49 t/level.t
+SHA1 2e8d7305f7fa852e78f2a1ab8d74dc84d6d14448 t/vector.t
+SHA1 4d2eb8c199eaeb931d6447dae8f2d634d2d14826 t/world.t
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: When cryptography is outlawed, bayl bhgynjf jvyy unir cevinpl.
+
+iQEVAwUBPm5L93cLPEOTuEwVAQGB2Qf9FrcyAG1owfFWTSwoKjE0CjAv/DmvhORB
+Hl6RDyZu5SUppzsUkSH2/GR/auwvP0eF6HNIdhooOkQN7oA6lkWgc4pFfzg1WdBo
+c7RVtplm8dnB56TtBwFTZ77SUbhl4Hgt854Ns9hFCbd9jr6/njVC22TMuaTOhPHF
+neO90KImM8gFoyW0BLwOxhG6ZtRWYgG1rVIRu5FnwO4Oi4OHe4gFmnlU+GW25udC
+26OgthKsp0EYpivINzyRfT8pD+w/DnWHmNSs2c5o5aUGY+gSRKcCeeLKmr/eu6E+
+7NwwOTlF+ak0pOpc4JabxU5UxjKQ50eVSGQ7pLKFTZIm0AhJywYrXg==
+=dfwA
+-----END PGP SIGNATURE-----

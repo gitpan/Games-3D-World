@@ -1,0 +1,18 @@
+
+############################################################################## 
+Games:3D::World:
+
+2003-03-07 v0.01 Tels - 51 tests (first version)
+ added:
+  * Game::3D::Brush - cubes, wedges, cylinders, pyramids; all as air, solid,
+		      or water
+  * Game::3D::Level - contain and render brushes
+  * Game::3D::Vector - length, rotate, translate, scale, normalize, etc
+  * rx,ry,rz and rotation() to Area
+2003-03-11 v0.02 Tels - 51 tests
+  * renamed to Games:: (not Game::)
+
+Please send me test-reports, your experiences with this and your ideas - I love
+to hear about my work!
+
+Tels <http://bloodgate.com/>
