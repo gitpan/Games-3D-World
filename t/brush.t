@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 
-use Test::More tests => 31;
+use Test::More tests => 54;
 use strict;
 
 BEGIN
@@ -20,7 +20,9 @@ BEGIN
 can_ok ('Games::3D::Brush', qw/ 
   new _init x y z
   size width height length shape pos
-  render type sides vertices vertices_final
+  render type sides
+  vertices vertices_final faces
+  default_texture
   /);
 
 my $brush = Games::3D::Brush->new ( );
@@ -34,6 +36,30 @@ is (join(",",$brush->pos()), '0,0,0', 'center is 0,0,0');
 is ($brush->shape(), BRUSH_CUBE, 'shaped like a cube');
 is ($brush->type(), BRUSH_SOLID, 'solid like a rock');
 is ($brush->sides(), 4, '4-sided');
+
+$brush = Games::3D::Brush->new ( type => BRUSH_AIR );
+is (ref($brush), 'Games::3D::Brush', 'new worked');
+
+is (join(":",$brush->vertices()), '-0.5:-0.5:-0.5:0.5:-0.5:-0.5:0.5:0.5:-0.5:-0.5:0.5:-0.5:-0.5:-0.5:0.5:0.5:-0.5:0.5:0.5:0.5:0.5:-0.5:0.5:0.5', 'vertice list');
+
+is (join(":",$brush->vertices_final()), '-0.5:-0.5:-0.5:0.5:-0.5:-0.5:0.5:0.5:-0.5:-0.5:0.5:-0.5:-0.5:-0.5:0.5:0.5:-0.5:0.5:0.5:0.5:0.5:-0.5:0.5:0.5', 'vertice list final');
+
+is (ref($brush->faces()), 'ARRAY', 'faces');
+
+my $txt = '';
+foreach my $face (@{$brush->faces})
+  {
+  is (ref($face),'HASH', 'face is a hash');
+  is ($face->{type},'quad', 'quad');
+  is (@{$face->{vertices}}, 4, '4 vertices');
+  foreach my $v (@{$face->{vertices}})
+    {
+    $txt .= join(':',$v->pos);
+    }
+  }
+
+# since x,y,z, and w,h,l are 0:
+is ($txt, "-0.5:0.5:0.50.5:0.5:0.50.5:-0.5:0.5-0.5:-0.5:0.50.5:0.5:0.50.5:0.5:-0.50.5:-0.5:-0.50.5:-0.5:0.5-0.5:-0.5:-0.5-0.5:-0.5:0.50.5:-0.5:0.50.5:-0.5:-0.50.5:0.5:-0.5-0.5:0.5:-0.5-0.5:-0.5:-0.50.5:-0.5:-0.5-0.5:0.5:-0.5-0.5:0.5:0.5-0.5:-0.5:0.5-0.5:-0.5:-0.50.5:0.5:0.5-0.5:0.5:0.5-0.5:0.5:-0.50.5:0.5:-0.5", 'faces ok');
 
 is ($brush->x(12), 12, 'X is 12');
 is ($brush->x(), 12, 'X is 12');

@@ -7,7 +7,8 @@ WriteMakefile(
     'PREREQ_PM'		=> {
 			Games::3D => 0.02,
 			Games::Object => 0.05,
-			SDL => '1.20.0',
+			SDL::App::FPS => 0.20,
+			SDL => '1.20.3', # see http://bloodgate.com/perl/sdl/
 			}, # e.g., Module::Name => 1.1
     'LIBS'		=> [ ], # e.g., '-lm'
     'DEFINE'		=> '', # e.g., '-DHAVE_SOMETHING'

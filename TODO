@@ -2,9 +2,10 @@
 ############################################################################## 
 Games::3D::World:
 
-* fill in Games::3D::World
 * add Games::3D::Plane
 * add Games::3D::Line
+* Brush.pm: the faces() are not yet rotated (e.g. the brush is always
+  unrotated)
 
 Please send me test-reports, your experiences with this and your ideas - I love
 to hear about my work!

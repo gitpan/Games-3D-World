@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 
-use Test::More tests => 15;
+use Test::More tests => 19;
 use strict;
 
 BEGIN
@@ -17,6 +17,8 @@ can_ok ('Games::3D::Vector', qw/
   new _init x y z
   pos
   rotate translate scale length flip
+  cross dot copy
+  add subtract divide mul
   /);
 
 ##############################################################################
@@ -57,4 +59,20 @@ $vec->scale(-1);
 is (join(',',$vec->pos()), '-12,-8,-9', 'pos is -12,-8,-9');
 $vec->flip();
 is (join(',',$vec->pos()), '12,8,9', 'pos is 12,8,9');
+$vec->mul(-1,2,3);
+is (join(',',$vec->pos()), '-12,16,27', 'pos is -12,16,27');
+
+##############################################################################
+# copy
+
+$vec = Games::3D::Vector->new ( 12, 8, 9);
+my $vec2 = $vec->copy();
+is (join(',',$vec2->pos()), '12,8,9', 'pos is 12,8,9');
+
+$vec = Games::3D::Vector->new ( 2, 3, 4);
+$vec2 = Games::3D::Vector->new ( 4, 3, 2);
+
+is ($vec->dot($vec2), 4*2 + 3*3 + 4*2, 'dot product');
+
+is (join(",",$vec->cross($vec2)->pos()), '-6,12,-6', 'cross product');
 

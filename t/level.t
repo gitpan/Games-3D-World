@@ -16,9 +16,10 @@ BEGIN
 can_ok ('Games::3D::Level', qw/ 
   new _init 
   render add_brush brushes
+  _load _build_portals rooms
   /);
 
-my $level = Games::3D::Level->new ( );
+my $level = Games::3D::Level->new ( file => 'levels/level00.txt' );
 
 is (ref($level), 'Games::3D::Level', 'new worked');
 

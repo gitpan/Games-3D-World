@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 
-use Test::More tests => 1;
+use Test::More tests => 3;
 use strict;
 
 BEGIN
@@ -13,13 +13,13 @@ BEGIN
   use_ok ('Games::3D::World'); 
   }
 
-#can_ok ('Games::3D::World', qw/ 
-#  new _init 
-#  render add_brush brushes
-#  /);
+can_ok ('Games::3D::World', qw/ 
+  new _init 
+  render camera
+  /);
 
-#my $world = Games::3D::World->new ( file => 'level00.txt' );
-#
-#is (ref($world), 'Games::3D::World', 'new worked (sort of)');
-#
+my $world = Games::3D::World->new ( level => 'levels/level00.txt' );
+
+is (ref($world), 'Games::3D::World', 'new worked');
+
 

@@ -9,8 +9,45 @@ Games:3D::World:
   * Game::3D::Level - contain and render brushes
   * Game::3D::Vector - length, rotate, translate, scale, normalize, etc
   * rx,ry,rz and rotation() to Area
+
 2003-03-11 v0.02 Tels - 51 tests
   * renamed to Games:: (not Game::)
+
+2003-03-12 v0.03 Tels - 54 tests
+  * Vector.pm: adedd cross(), dot() and copy()
+
+2003-03-18 v0.04 Tels - 62 tests
+  * Vector.pm: added method set()
+  * added Mass.pm - physical mass with simulation and forces applied
+
+2003-03-24 v0.05a Tels - 62 tests (not released)
+  * Vector.pm: added add(), subtract(), divide()
+  * added PhysEng.pm
+  * added Attractor.pm
+  * fixed Mass.pm a bit
+2003-04-02 v0.05b Tels - 69 tests (not released)
+  * added example with attractor and masses attracted to it
+  * Mass.pm: added attracted_by
+  * PhysEng: fixed to make it work
+  * added Room.pm for portal rendering engine
+2003-04-19 v0.05c Tels - 74 tests (not released)
+  * fixed attractor.pl to use SDL::App::FPS w/ config, font, fps and console
+  * Level: added _load(), _build_portals()
+  * Brush: vertices_final() didn't work at all
+  * Brush: vertices() negleted to unpack returned result
+  * Brush: added faces()
+  * World: made a Thingy; added _init(), render(), camera()
+  * Room: added _build_vertices(), option $portals to render(), better render()
+2003-04-20 v0.05 Tels - 104 tests
+  * test for $brush->faces()
+  * Brush: faces() scale/translate the faces to reflect real brush layout 
+  * Vector.pm: added method mul()
+  * fixed level->build() and level->render() a bit
+  * Room: add_face() and add_portal() to add_faces() and add_portals(), resp.
+  * Brush and Room: added default_texture
+  * render rooms with scaled/repeated textures
+  * World.pm: include a PhysEng
+  * added: Object.pm: a mass with a size, that can render itself
 
 Please send me test-reports, your experiences with this and your ideas - I love
 to hear about my work!

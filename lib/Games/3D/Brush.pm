@@ -12,6 +12,8 @@ use Games::3D::Area;
 use Games::3D::Thingy;
 use vars qw/@ISA $VERSION @EXPORT_OK/;
 
+use Games::3D::Vector;
+
 @ISA = qw/Games::3D::Thingy Games::3D::Area Exporter/;
 @EXPORT_OK= qw/
   BRUSH_CUBE BRUSH_WEDGE BRUSH_CYLINDER BRUSH_PYRAMID
@@ -57,11 +59,20 @@ my $geo =
   cube_air => [ 24, 0,		# 6 quads, 0 triangles
         pack ("C24",
 	 7,6,5,4,	# front
-	 5,6,2,1,	# right
-	 4,5,1,0,	# bottom
-	 1,2,3,0,	# back
+	 6,2,1,5,	# right
+	 0,4,5,1,	# bottom
+	 2,3,0,1,	# back
 	 3,7,4,0,	# left
 	 6,7,3,2),	# top
+	 undef,			# no triangles
+	 [			      # text coords & scaling dirs for quards
+	  'h','w', 0,0, 0,1, 1,1, 1,0, 
+	  'h','l', 0,0, 0,1, 1,1, 1,0, 
+	  'l','w', 0,0, 0,1, 1,1, 1,0, 
+	  'h','w', 0,0, 0,1, 1,1, 1,0, 
+	  'h','l', 0,0, 0,1, 1,1, 1,0, 
+	  'l','w', 0,0, 0,1, 1,1, 1,0, 
+	 ],
         ],
   wedge_solid => [ 12, 8,	# 3 quads and 2 triangles
 	pack ("C24",
@@ -127,6 +138,8 @@ sub _init
   $self->{shape} = $args->{shape} || BRUSH_CUBE;
   $self->{type} = $args->{type} || BRUSH_SOLID;
   
+  $self->{default_texture} = $args->{default_texture};
+  
   $self->{sides} = 4;
   if ($self->{shape} != BRUSH_CUBE &&
       $self->{shape} != BRUSH_WEDGE)
@@ -145,6 +158,14 @@ sub shape
     $self->{shape} = shift;
     }
   $self->{shape};
+  }
+
+sub default_texture
+  {
+  my $self = shift;
+
+  $self->{default_texture} = $_[0] if @_ > 0;
+  $self->{default_texture};
   }
 
 sub sides
@@ -210,7 +231,7 @@ sub vertices
   my $self = shift;
 
   my $shape = $render_shape->{$self->{shape}};
-  $coord->{$shape};
+  unpack ("d24", $coord->{$shape});
   }
 
 sub vertices_final
@@ -220,16 +241,107 @@ sub vertices_final
   my $self = shift;
 
   my $shape = $render_shape->{$self->{shape}};
-  my @coo = $coord->{$shape};
+  my @coo = unpack("d24",$coord->{$shape});
+  
   my @vertices = ();
   for (my $i = 0; $i < scalar @coo; $i += 3)
     {
-    my $vertice = Games::3D::Vector->new($coo[$i],$coo[$i+1],$coo[$i+2]);
+    my $vertice = Games::3D::Vector->new( $coo[$i], $coo[$i+1], $coo[$i+2] );
     $vertice->scale($self->{w},$self->{h},$self->{l});
     $vertice->rotate($self->{xr},$self->{yr},$self->{zr});
     $vertice->translate($self->{x},$self->{y},$self->{z});
     push @vertices, $vertice->pos();
     }
+  @vertices;
+  }
+
+sub faces
+  {
+  # return all the individual faces of the brush, rotated, scaled, transformed
+  my $self = shift;
+
+  my $shape = $render_shape->{$self->{shape}};
+  my $vert_shape = $shape_names->{$self->{shape}};
+  my $type = $render_type->{$self->{type}};
+
+  my $faces = [];
+
+  my $g = $geo->{$vert_shape.'_'.$type};
+  my @c = unpack ("d24",$coord->{$shape});
+
+  my $j; my $face_nr = 0;
+  # quads first
+  for ($j = 0; $j < $g->[0]; $j += 4)
+    {
+    # get four indexes of vertices
+    my @v = unpack ("C4", substr($g->[2],$j,4));
+    my $face = [];
+    # get the four vertices
+    for my $idx (@v)
+      {
+      my $vector = Games::3D::Vector->new( 
+        x => $c[$idx * 3],
+        y => $c[$idx * 3 +1],
+        z => $c[$idx * 3 +2] );
+      $vector->mul($self->{w},$self->{h},$self->{l});
+      $vector->translate($self->{x},$self->{y},$self->{z});
+      push @$face, $vector;
+      }
+    # text cord for each quad face plus scaling info comes from $g->[4]
+    my $idx = $face_nr * 10;		# 0 and 1 are 'x','y' etc
+    my $tw = 64;			# should really use tex info for face
+    my $th = 64;
+    my $scale_a = abs($self->{$g->[4]->[$idx]} / $tw);
+    my $scale_b = abs($self->{$g->[4]->[$idx+1]} / $th);
+    $idx += 2;
+    my $tex = [ ]; 
+    for (my $k = 0; $k < 8; $k += 2)
+      {
+      push @$tex, $g->[4]->[$idx] * $scale_a; $idx++;
+      push @$tex, $g->[4]->[$idx] * $scale_b; $idx++;
+      }
+
+    push @$faces, { type => 'quad', cnt => 4, vertices => $face, 
+	texcoord => $tex };
+
+    $face_nr++;
+    }
+ 
+  # triangles now
+  for ($j = 0; $j < $g->[1]; $j += 3)
+    {
+    # get four indexes of vertices
+    my @v = unpack ("C4", substr($g->[3],$j,3));
+    my $face = [];
+    # get the three vertices
+    for my $idx (@v)
+      {
+      my $vector = Games::3D::Vector->new( 
+        x => $c[$idx * 3],
+        y => $c[$idx * 3 +1],
+        z => $c[$idx * 3 +2] );
+      $vector->mul($self->{w},$self->{h},$self->{l});
+      $vector->translate($self->{x},$self->{y},$self->{z});
+      push @$face, $vector;
+      }
+    # text cord for each quad face plus scaling info comes from $g->[4]
+    my $idx = $face_nr * 8 + 2;		# 0 and 1 are 'x','y' etc
+    my $tw = 64;			# should really use tex info for face
+    my $th = 64;
+    my $scale_a = $self->{$g->[4]->[0]} / $tw;
+    my $scale_b = $self->{$g->[4]->[1]} / $th;
+    my $tex = [ ]; 
+    for (my $k = 0; $k < 6; $k += 2)
+      {
+      push @$tex, $g->[4]->[$idx] * $scale_a; $idx++;
+      push @$tex, $g->[4]->[$idx] * $scale_b; $idx++;
+      }
+
+    push @$faces, { type => 'triangle', cnt => 3, vertices => $face,
+	texcoord => $tex };
+    }
+
+  $faces;
   }
 
 1;
@@ -317,7 +429,15 @@ which share vertices or edges or sides.
 Set and return or just return the number of sides the brush has. Cubes and
 wedges always have 4, but cylinders or pyramids may have between 3 and 
 L<BRUSH_MAX_SIDES>. 
-	
+
+=item default_texture()
+
+        $room->default_texture();
+        $room->default_texture( $texture );
+
+Get/set the default texture as OpenGL texture object. Also possible as
+parameter to new().
+
 =back
 
 =head1 AUTHORS
